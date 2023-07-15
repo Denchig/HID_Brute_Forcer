@@ -12,19 +12,17 @@ keyboard = Keyboard(usb_hid.devices)
 keyboard_layout = KeyboardLayoutUS(keyboard)
 numbers = ['ZERO', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE']
 
-led.value = True
-time.sleep(2)
-led.value = False
-time.sleep(1)
+time.sleep(4)
+
+def blink():
+    led.value = True
+    time.sleep(0.1)
+    led.value = False
+
 for x in range(0, 10000):
     numeric = '{0:06}'.format(x)
     for y in numeric:
-        led.value = True
-        keyboard.press(getattr(Keycode, numbers[int(y)]))
-        #keyboard.send(getattr(Keycode, numbers[int(y)]))
-        keyboard.release_all()
-        time.sleep(0.1)
-    keyboard.press(Keycode.ENTER)
-    keyboard.release_all()
-    led.value = False
+        keyboard.send(getattr(Keycode, numbers[int(y)]))
+        blink()
+    keyboard.send(Keycode.ENTER)
     time.sleep(12)
