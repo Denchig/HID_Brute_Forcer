@@ -8,38 +8,46 @@ import usb_hid
 # Modified boot descriptor to enable RP2040 macropad to work with KVM switch
 # https://github.com/adafruit/circuitpython/issues/1136#issuecomment-1002833056
 BOOT_KEYBOARD_DESCRIPTOR=bytes((
-    0x05, 0x01,        # Usage Page (Generic Desktop Ctrls)
-    0x09, 0x06,        # Usage (Keyboard)
-    0xA1, 0x01,        # Collection (Application)
-    0x75, 0x01,        # Report Size (1)
-    0x95, 0x08,        # Report Count (8)    
-    0x05, 0x07,        # Usage Page (Kbrd/Keypad)
-    0x19, 0xE0,        # Usage Minimum (0xE0, 224)
-    0x29, 0xE7,        # Usage Maximum (0xE7, 231)
-    0x15, 0x00,        # Logical Minimum (0)
-    0x25, 0x01,        # Logical Maximum (1)
-    0x81, 0x02,        # Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    0x95, 0x01,        # Report Count (1)
-    0x75, 0x08,        # Report Size (8)
-    0x81, 0x03,        # Input (Const,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    0x95, 0x05,        # Report Count (5)
-    0x75, 0x01,        # Report Size (1)
-    0x05, 0x08,        # Usage Page (LEDs)
-    0x19, 0x01,        # Usage Minimum (Num Lock)
-    0x29, 0x05,        # Usage Maximum (Kana)
-    0x91, 0x02,        # Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
-    0x95, 0x01,        # Report Count (1)
-    0x75, 0x03,        # Report Size (3)
-    0x91, 0x03,        # Output (Const,Array,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
-    0x95, 0x06,        # Report Count (6)
-    0x75, 0x08,        # Report Size (8)
-    0x15, 0x00,        # Logical Minimum (0)
-    0x25, 0x68,        # Logical Maximum (104)
-    0x05, 0x07,        # Usage Page (Kbrd/Keypad)
-    0x19, 0x00,        # Usage Minimum (0)
-    0x29, 0x68,        # Usage Maximum (104)
-    0x81, 0x00,        # Input (Data,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    0xC0,
+    #  Keyboard
+    0x05, 0x01,                      # USAGE_PAGE (Generic Desktop)	  47 */
+    0x09, 0x06,                      # USAGE (Keyboard) */
+    0xa1, 0x01,                      # COLLECTION (Application) */
+    0x05, 0x07,                      #   USAGE_PAGE (Keyboard) */
+    # Keyboard Modifiers (shift, alt, ...) */
+    0x19, 0xe0,                      #   USAGE_MINIMUM (Keyboard LeftControl) */
+    0x29, 0xe7,                      #   USAGE_MAXIMUM (Keyboard Right GUI) */
+    0x15, 0x00,                      #   LOGICAL_MINIMUM (0) */
+    0x25, 0x01,                      #   LOGICAL_MAXIMUM (1) */
+    0x75, 0x01,                      #   REPORT_SIZE (1) */
+	0x95, 0x08,                      #   REPORT_COUNT (8) */
+    0x81, 0x02,                      #   INPUT (Data,Var,Abs) */
+    # Reserved byte, used for consumer reports, only works with linux */
+	0x05, 0x0C,             		 #   Usage Page (Consumer) */
+    0x95, 0x01,                      #   REPORT_COUNT (1) */
+    0x75, 0x08,                      #   REPORT_SIZE (8) */
+    0x15, 0x00,                      #   LOGICAL_MINIMUM (0) */
+    0x26, 0xFF, 0x00,                #   LOGICAL_MAXIMUM (255) */
+    0x19, 0x00,                      #   USAGE_MINIMUM (0) */
+    0x29, 0xFF,                      #   USAGE_MAXIMUM (255) */
+    0x81, 0x00,                      #   INPUT (Data,Ary,Abs) */
+	# 5 LEDs for num lock etc, 3 left for advanced, custom usage */
+	0x05, 0x08,						 #   USAGE_PAGE (LEDs) */
+	0x19, 0x01,						 #   USAGE_MINIMUM (Num Lock) */
+	0x29, 0x08,						 #   USAGE_MAXIMUM (Kana + 3 custom)*/
+	0x95, 0x08,						 #   REPORT_COUNT (8) */
+	0x75, 0x01,						 #   REPORT_SIZE (1) */
+	0x91, 0x02,						 #   OUTPUT (Data,Var,Abs) */
+    # 6 Keyboard keys */
+    0x05, 0x07,                      #   USAGE_PAGE (Keyboard) */
+    0x95, 0x06,                      #   REPORT_COUNT (6) */
+    0x75, 0x08,                      #   REPORT_SIZE (8) */
+    0x15, 0x00,                      #   LOGICAL_MINIMUM (0) */
+    0x26, 0xE7, 0x00,                #   LOGICAL_MAXIMUM (231) */
+    0x19, 0x00,                      #   USAGE_MINIMUM (Reserved (no event indicated)) */
+    0x29, 0xE7,                      #   USAGE_MAXIMUM (Keyboard Right GUI) */
+    0x81, 0x00,                      #   INPUT (Data,Ary,Abs) */
+    # End */
+    0xc0                            # END_COLLECTION */
 ))
 
 maintenance_pin = digitalio.DigitalInOut(board.GP2)
@@ -65,4 +73,3 @@ else:
     usb_cdc.disable()
     usb_midi.disable()
     usb_hid.enable((kbd,), boot_device=1)
-    #usb_hid.enable((usb_hid.Device.KEYBOARD,), boot_device=1)
