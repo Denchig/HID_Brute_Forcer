@@ -16,13 +16,16 @@ time.sleep(4)
 
 def blink():
     led.value = True
-    time.sleep(0.1)
+    time.sleep(0.05)
     led.value = False
+    time.sleep(0.05)
 
 for x in range(0, 10000):
     numeric = '{0:06}'.format(x)
     for y in numeric:
-        keyboard.send(getattr(Keycode, numbers[int(y)]))
+        keyboard.press(getattr(Keycode, numbers[int(y)]))
+        keyboard.release(getattr(Keycode, numbers[int(y)]))
         blink()
-    keyboard.send(Keycode.ENTER)
+    keyboard.press(Keycode.RETURN)
+    keyboard.release(Keycode.RETURN)
     time.sleep(12)
